@@ -1,2 +1,3 @@
 # budget-planner
-it’s clear, includes “Pakistan” for SEO relevance, and describes the main function.
+A simple, interactive budget planning tool for Pakistan and accross the world users with calculator and tips.
+
