@@ -7,7 +7,7 @@ document.getElementById("add-transaction").addEventListener("click", () => {
 
   row.innerHTML = `
     <td>
-      <input type="text" class="category" placeholder="Category" required>
+      <input type="text" class="category" placeholder="Category (Income/Savings/Expense)" required>
     </td>
     <td>
       <input type="number" class="amount" placeholder="Amount" required>
@@ -38,6 +38,7 @@ document.getElementById("calculate-budget").addEventListener("click", () => {
   categories.forEach((cat, index) => {
     const name = cat.value.trim();
     const amount = Number(amounts[index].value) || 0;
+
     if(name.toLowerCase() === "income") {
       totalIncome += amount;
     } else if(name.toLowerCase() === "savings") {
@@ -46,6 +47,7 @@ document.getElementById("calculate-budget").addEventListener("click", () => {
     } else {
       totalExpenses += amount;
     }
+
     transactions.push({ name, amount });
   });
 
