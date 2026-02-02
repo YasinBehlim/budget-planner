@@ -1,62 +1,89 @@
-document.getElementById("budget-form").addEventListener("submit", function(e) {
-  e.preventDefault();
+let transactions = [];
 
-  // Get values from input fields
-  const income = Number(document.getElementById("income").value) || 0;
-  const rent = Number(document.getElementById("rent").value) || 0;
-  const food = Number(document.getElementById("food").value) || 0;
-  const transport = Number(document.getElementById("transport").value) || 0;
-  const utilities = Number(document.getElementById("utilities").value) || 0;
-  const others = Number(document.getElementById("others").value) || 0;
+// Add transaction row dynamically
+document.getElementById("add-transaction").addEventListener("click", () => {
+  const tbody = document.querySelector("#transaction-table tbody");
+  const row = document.createElement("tr");
 
-  // Calculate total expenses and remaining budget
-  const totalExpenses = rent + food + transport + utilities + others;
-  const remainingBudget = income - totalExpenses;
+  row.innerHTML = `
+    <td>
+      <input type="text" class="category" placeholder="Category" required>
+    </td>
+    <td>
+      <input type="number" class="amount" placeholder="Amount" required>
+    </td>
+    <td>
+      <button class="delete-row">Delete</button>
+    </td>
+  `;
 
-  // Display results
-  document.getElementById("total-expenses").textContent = `Total Expenses: ${totalExpenses} PKR`;
-  document.getElementById("remaining-budget").textContent = `Remaining Budget: ${remainingBudget} PKR`;
+  tbody.appendChild(row);
 
-  // Create pie chart
-  const ctx = document.getElementById('expenseChart').getContext('2d');
+  // Delete row functionality
+  row.querySelector(".delete-row").addEventListener("click", () => {
+    row.remove();
+  });
+});
 
-  // Destroy previous chart if exists
-  if(window.expenseChartInstance) {
-    window.expenseChartInstance.destroy();
-  }
+// Calculate budget
+document.getElementById("calculate-budget").addEventListener("click", () => {
+  const categories = document.querySelectorAll(".category");
+  const amounts = document.querySelectorAll(".amount");
+
+  transactions = [];
+  let totalIncome = 0;
+  let totalExpenses = 0;
+  let totalSavings = 0;
+
+  categories.forEach((cat, index) => {
+    const name = cat.value.trim();
+    const amount = Number(amounts[index].value) || 0;
+    if(name.toLowerCase() === "income") {
+      totalIncome += amount;
+    } else if(name.toLowerCase() === "savings") {
+      totalSavings += amount;
+      totalExpenses += amount; // consider savings as planned expense
+    } else {
+      totalExpenses += amount;
+    }
+    transactions.push({ name, amount });
+  });
+
+  const remaining = totalIncome - totalExpenses;
+
+  // Update dashboard
+  document.getElementById("total-income").textContent = totalIncome + " PKR";
+  document.getElementById("total-expenses").textContent = totalExpenses + " PKR";
+  document.getElementById("remaining-budget").textContent = remaining + " PKR";
+  document.getElementById("total-savings").textContent = totalSavings + " PKR";
+
+  // Generate pie chart
+  const ctx = document.getElementById("expenseChart").getContext("2d");
+  if(window.expenseChartInstance) window.expenseChartInstance.destroy();
+
+  const labels = transactions.map(t => t.name);
+  const data = transactions.map(t => t.amount);
 
   window.expenseChartInstance = new Chart(ctx, {
-    type: 'pie',
+    type: "pie",
     data: {
-      labels: ['Rent', 'Food', 'Transport', 'Utilities', 'Others'],
+      labels,
       datasets: [{
-        label: 'Expenses',
-        data: [rent, food, transport, utilities, others],
-        backgroundColor: [
-          '#FF6384',
-          '#36A2EB',
-          '#FFCE56',
-          '#4BC0C0',
-          '#9966FF'
-        ]
+        data,
+        backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#C9CBCF','#8AC926']
       }]
     },
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          position: 'bottom'
-        },
+        legend: { position: 'bottom' },
         datalabels: {
           color: 'white',
           formatter: (value, context) => {
             const label = context.chart.data.labels[context.dataIndex];
             return `${label}: ${value}`;
           },
-          font: {
-            weight: 'bold',
-            size: 14
-          }
+          font: { weight: 'bold', size: 12 }
         }
       }
     },
