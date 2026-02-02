@@ -1,31 +1,4 @@
-document.getElementById("budget-form").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  // Get values from input fields
-  const income = Number(document.getElementById("income").value) || 0;
-  const rent = Number(document.getElementById("rent").value) || 0;
-  const food = Number(document.getElementById("food").value) || 0;
-  const transport = Number(document.getElementById("transport").value) || 0;
-  const utilities = Number(document.getElementById("utilities").value) || 0;
-  const others = Number(document.getElementById("others").value) || 0;
-
-  // Calculate total expenses and remaining budget
-  const totalExpenses = rent + food + transport + utilities + others;
-  const remainingBudget = income - totalExpenses;
-
-  // Display results
-  document.getElementById("total-expenses").textContent = `Total Expenses: ${totalExpenses} PKR`;
-  document.getElementById("remaining-budget").textContent = `Remaining Budget: ${remainingBudget} PKR`;
-
-  // Create pie chart
-  const ctx = document.getElementById('expenseChart').getContext('2d');
-
-  // Destroy previous chart if exists
-  if(window.expenseChartInstance) {
-    window.expenseChartInstance.destroy();
-  }
-
-  window.expenseChartInstance = new Chart(ctx, {
+window.expenseChartInstance = new Chart(ctx, {
     type: 'pie',
     data: {
       labels: ['Rent', 'Food', 'Transport', 'Utilities', 'Others'],
@@ -42,7 +15,23 @@ document.getElementById("budget-form").addEventListener("submit", function(e) {
       }]
     },
     options: {
-      responsive: true
-    }
-  });
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        datalabels: {
+          color: 'white',
+          formatter: (value, context) => {
+            const label = context.chart.data.labels[context.dataIndex];
+            return `${label}: ${value}`;
+          },
+          font: {
+            weight: 'bold',
+            size: 14
+          }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
 });
