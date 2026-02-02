@@ -22,23 +22,23 @@
   <main>
     <h2>Budget Calculator</h2>
     <form id="budget-form">
-      <label>Monthly Income (PKR):</label><br>
-      <input type="number" id="income" placeholder="Enter your income" required><br><br>
+      <label>Monthly Income (PKR):</label>
+      <input type="number" id="income" placeholder="Enter your income" required>
 
-      <label>Rent:</label><br>
-      <input type="number" id="rent" placeholder="Enter rent amount"><br><br>
+      <label>Rent:</label>
+      <input type="number" id="rent" placeholder="Enter rent amount">
 
-      <label>Food:</label><br>
-      <input type="number" id="food" placeholder="Enter food expenses"><br><br>
+      <label>Food:</label>
+      <input type="number" id="food" placeholder="Enter food expenses">
 
-      <label>Transport:</label><br>
-      <input type="number" id="transport" placeholder="Enter transport expenses"><br><br>
+      <label>Transport:</label>
+      <input type="number" id="transport" placeholder="Enter transport expenses">
 
-      <label>Utilities:</label><br>
-      <input type="number" id="utilities" placeholder="Enter utilities expenses"><br><br>
+      <label>Utilities:</label>
+      <input type="number" id="utilities" placeholder="Enter utilities expenses">
 
-      <label>Other Expenses:</label><br>
-      <input type="number" id="others" placeholder="Enter other expenses"><br><br>
+      <label>Other Expenses:</label>
+      <input type="number" id="others" placeholder="Enter other expenses">
 
       <button type="submit">Calculate</button>
     </form>
@@ -47,7 +47,7 @@
     <p id="total-expenses">Total Expenses: 0 PKR</p>
     <p id="remaining-budget">Remaining Budget: 0 PKR</p>
 
-    <canvas id="expenseChart" width="400" height="400"></canvas>
+    <canvas id="expenseChart"></canvas>
   </main>
 
   <footer>
@@ -56,7 +56,7 @@
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
