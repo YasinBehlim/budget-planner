@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget Calculator - Pak Budget Planner</title>
+  <title>Budget Dashboard - Pak Budget Planner</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,33 +20,48 @@
   </header>
 
   <main>
-    <h2>Budget Calculator</h2>
-    <form id="budget-form">
-      <label>Monthly Income (PKR):</label>
-      <input type="number" id="income" placeholder="Enter your income" required>
+    <h2>Budget Dashboard</h2>
 
-      <label>Rent:</label>
-      <input type="number" id="rent" placeholder="Enter rent amount">
+    <!-- Summary Cards -->
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Total Income</h3>
+        <p id="total-income">0 PKR</p>
+      </div>
+      <div class="card">
+        <h3>Total Expenses</h3>
+        <p id="total-expenses">0 PKR</p>
+      </div>
+      <div class="card">
+        <h3>Remaining Budget</h3>
+        <p id="remaining-budget">0 PKR</p>
+      </div>
+      <div class="card">
+        <h3>Total Savings</h3>
+        <p id="total-savings">0 PKR</p>
+      </div>
+    </div>
 
-      <label>Food:</label>
-      <input type="number" id="food" placeholder="Enter food expenses">
+    <!-- Transaction Table -->
+    <h3>Add Expenses</h3>
+    <table id="transaction-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Amount (PKR)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be added dynamically -->
+      </tbody>
+    </table>
 
-      <label>Transport:</label>
-      <input type="number" id="transport" placeholder="Enter transport expenses">
+    <button id="add-transaction">Add Expense</button>
+    <button id="calculate-budget">Calculate Budget</button>
 
-      <label>Utilities:</label>
-      <input type="number" id="utilities" placeholder="Enter utilities expenses">
-
-      <label>Other Expenses:</label>
-      <input type="number" id="others" placeholder="Enter other expenses">
-
-      <button type="submit">Calculate</button>
-    </form>
-
-    <h3>Results:</h3>
-    <p id="total-expenses">Total Expenses: 0 PKR</p>
-    <p id="remaining-budget">Remaining Budget: 0 PKR</p>
-
+    <!-- Pie Chart -->
+    <h3>Expense Distribution</h3>
     <canvas id="expenseChart"></canvas>
   </main>
 
@@ -54,7 +69,6 @@
     <p>&copy; 2026 Pak Budget Planner</p>
   </footer>
 
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="script.js"></script>
