@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Calculator - Pak Budget Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Pak Budget Planner</h1>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="calculator.html">Calculator</a> |
+      <a href="blog.html">Blog</a> |
+      <a href="about.html">About</a> |
+      <a href="privacy.html">Privacy</a> |
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Budget Calculator</h2>
+    <form id="budget-form">
+      <label>Monthly Income (PKR):</label><br>
+      <input type="number" id="income" placeholder="Enter your income" required><br><br>
+
+      <label>Rent:</label><br>
+      <input type="number" id="rent" placeholder="Enter rent amount"><br><br>
+
+      <label>Food:</label><br>
+      <input type="number" id="food" placeholder="Enter food expenses"><br><br>
+
+      <label>Transport:</label><br>
+      <input type="number" id="transport" placeholder="Enter transport expenses"><br><br>
+
+      <label>Utilities:</label><br>
+      <input type="number" id="utilities" placeholder="Enter utilities expenses"><br><br>
+
+      <label>Other Expenses:</label><br>
+      <input type="number" id="others" placeholder="Enter other expenses"><br><br>
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    <h3>Results:</h3>
+    <p id="total-expenses">Total Expenses: 0 PKR</p>
+    <p id="remaining-budget">Remaining Budget: 0 PKR</p>
+
+    <canvas id="expenseChart" width="400" height="400"></canvas>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Pak Budget Planner</p>
+  </footer>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
 
