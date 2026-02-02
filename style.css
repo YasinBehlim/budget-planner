@@ -29,7 +29,7 @@ header nav a:hover {
 }
 
 main {
-  max-width: 600px;
+  max-width: 800px;
   margin: 30px auto;
   padding: 20px;
   background-color: white;
@@ -37,35 +37,92 @@ main {
   box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
 }
 
-form input {
-  width: 100%;
-  padding: 10px;
+h2, h3 {
   margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.card {
+  flex: 1 1 45%;
+  background-color: #1a73e8;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+  margin-bottom: 10px;
   font-size: 16px;
 }
 
-form button {
-  padding: 12px 20px;
+.card p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Table layout */
+#transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#transaction-table th, #transaction-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+#transaction-table input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  margin: 10px 5px;
   background-color: #1a73e8;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
   cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
-form button:hover {
+button:hover {
   background-color: #155ab6;
 }
 
-h3 {
-  margin-top: 25px;
+/* Pie Chart */
+#expenseChart {
+  max-width: 500px;
+  max-height: 400px;
+  margin: 20px auto;
+  display: block;
 }
 
-#expenseChart {
-  margin-top: 20px;
-  max-width: 400px; /* smaller chart */
-  max-height: 400px;
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #ddd;
+  margin-top: 30px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
