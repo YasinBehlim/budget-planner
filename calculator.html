@@ -2,77 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Budget Planner</title>
+  <title>Pakistan Budget Planner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <header class="top-bar">
-    <h1>Budget Planner</h1>
-    <button id="themeToggle">🌙</button>
-  </header>
 
-  <main class="container">
+<header class="top-bar">
+  <div class="logo">Budget Planner</div>
 
-    <!-- DASHBOARD -->
-    <section class="cards">
-      <div class="card">
-        <span>Total Income</span>
-        <strong id="income">0 PKR</strong>
-      </div>
-      <div class="card">
-        <span>Total Expenses</span>
-        <strong id="expenses">0 PKR</strong>
-      </div>
-      <div class="card">
-        <span>Your Savings</span>
-        <strong id="savings">0 PKR</strong>
-      </div>
-      <div class="card">
-        <span>Savings %</span>
-        <strong id="savingsPercent">0%</strong>
-      </div>
-    </section>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="calculator.html" class="active">Calculator</a>
+    <a href="blog.html">Blog</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 
-    <!-- INPUT TABLE -->
-    <section class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Amount (PKR)</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="rows">
-          <tr>
-            <td><input value="Income" readonly></td>
-            <td><input type="number" class="amount"></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td><input value="EMI"></td>
-            <td><input type="number" class="amount"></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+  <button id="themeToggle">🌙</button>
+</header>
 
-      <div class="actions">
-        <button onclick="addRow()">➕ Add Expense</button>
-        <button onclick="calculate()">📊 Calculate</button>
-      </div>
-    </section>
+<main class="container">
 
-    <!-- BREAKDOWN -->
-    <section>
-      <h2>Expense Breakdown</h2>
-      <div id="bars"></div>
-    </section>
+  <!-- DASHBOARD -->
+  <section class="cards">
+    <div class="card">
+      <span>Total Income</span>
+      <strong id="income">0 PKR</strong>
+    </div>
+    <div class="card">
+      <span>Total Expenses</span>
+      <strong id="expenses">0 PKR</strong>
+    </div>
+    <div class="card">
+      <span>Your Savings</span>
+      <strong id="savings">0 PKR</strong>
+    </div>
+    <div class="card">
+      <span>Savings %</span>
+      <strong id="savingsPercent">0%</strong>
+    </div>
+  </section>
 
-  </main>
+  <!-- INPUT SECTION -->
+  <section class="table-section">
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Amount (PKR)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr>
+          <td><input value="Income" readonly></td>
+          <td><input type="number" class="amount"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><input value="EMI"></td>
+          <td><input type="number" class="amount"></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
 
-  <script src="script.js"></script>
+    <div class="actions">
+      <button onclick="addRow()">➕ Add Expense</button>
+      <button onclick="calculate()">📊 Calculate</button>
+    </div>
+  </section>
+
+  <!-- BREAKDOWN -->
+  <section>
+    <h2>Expense Breakdown</h2>
+    <div id="bars"></div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
