@@ -1,31 +1,263 @@
-<!-- Full updated calculator (copy this entire block) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- same meta + Bootstrap + Chart.js + style as before -->
-  <title>Monthly Budget Calculator - PakBudget</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Calculator - PakBudget</title>
+  <meta name="description" content="Free monthly budget calculator Pakistan 2026 - PKR income, expenses, savings, live pie chart">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f8f9fa; }
+    .dark-mode { background: #121212; color: #e0e0e0; }
+    .dark-mode .card { background: #1e1e1e; border-color: #333; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .table th { background: #f1f3f5; }
+    .btn-success { background: #28a745; }
+  </style>
 </head>
 <body>
-  <!-- navbar copy from index.html -->
+
+  <!-- Navbar (same as homepage) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">PakBudget</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link active" href="calculator.html">Calculator</a></li>
+          <li><a class="nav-link" href="tips.html">Tips</a></li>
+          <li><a class="nav-link" href="privacy-policy.html">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
   <div class="container my-5">
-    <!-- Your previous calculator content + these extras -->
-    <button class="btn btn-outline-success mb-3" onclick="loadPakCategories()">Load Common Pakistani Categories</button>
-    <!-- rest of your calculator -->
+    <h1 class="text-center mb-4">Monthly Budget Calculator</h1>
+
+    <!-- Income -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <label class="form-label fw-bold">Monthly Income (PKR)</label>
+        <input type="number" id="income" class="form-control form-control-lg" placeholder="150000" oninput="saveData()">
+      </div>
+    </div>
+
+    <!-- Add Expense -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Add Expense</h5>
+        <div class="row g-3">
+          <div class="col-md-5">
+            <input type="text" id="cat" class="form-control" placeholder="Category e.g. Rent">
+          </div>
+          <div class="col-md-4">
+            <input type="number" id="amt" class="form-control" placeholder="Amount">
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-success w-100" onclick="addExpense()">+ Add</button>
+          </div>
+        </div>
+        <button class="btn btn-outline-success mt-3" onclick="loadPakCategories()">Load Common Pakistani Categories</button>
+      </div>
+    </div>
+
+    <!-- Expenses Table -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5>Your Expenses</h5>
+          <button class="btn btn-sm btn-danger" onclick="clearAll()">Clear All</button>
+        </div>
+        <table class="table table-hover" id="expTable">
+          <thead><tr><th>Category</th><th class="text-end">Amount (PKR)</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <h5 class="text-end" id="totalExp">Total Expenses: 0 PKR</h5>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="row">
+      <div class="col-md-5 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <h4>Results</h4>
+            <p class="fs-4">Monthly Savings: <span id="savings" class="fw-bold text-success">0 PKR</span></p>
+            <p class="fs-4">Savings Rate: <span id="savPct" class="fw-bold">0%</span></p>
+            <button class="btn btn-primary btn-lg w-100 mt-3" onclick="calculate()">Update Chart & Results</button>
+            <button class="btn btn-outline-secondary mt-2 w-100" onclick="exportCSV()">Export to CSV</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5>Spending Breakdown</h5>
+            <canvas id="myChart" height="280"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AdSense placeholder (put your ad code here later) -->
+    <!-- <div class="my-5 text-center border border-2 border-dashed p-5 text-muted">AdSense Unit Here</div> -->
   </div>
 
+  <footer class="bg-dark text-white py-4 text-center">
+    <p>© 2026 PakBudget • Free Pakistan Budget Planner</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // previous script + these two functions
+    let expenses = [];
+    let chartInstance = null;
+
+    function saveData() {
+      localStorage.setItem("budgetIncome", document.getElementById("income").value);
+      localStorage.setItem("budgetExpenses", JSON.stringify(expenses));
+    }
+
+    function loadData() {
+      const savedIncome = localStorage.getItem("budgetIncome");
+      if (savedIncome) document.getElementById("income").value = savedIncome;
+
+      const savedExpenses = localStorage.getItem("budgetExpenses");
+      if (savedExpenses) {
+        expenses = JSON.parse(savedExpenses);
+        updateTable();
+        calculate();
+      }
+    }
+
+    function addExpense() {
+      const cat = document.getElementById("cat").value.trim();
+      const amt = parseFloat(document.getElementById("amt").value);
+      if (cat && amt > 0) {
+        expenses.push({cat, amt});
+        updateTable();
+        saveData();
+        document.getElementById("cat").value = "";
+        document.getElementById("amt").value = "";
+      }
+    }
+
+    function updateTable() {
+      const tbody = document.querySelector("#expTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      expenses.forEach((item, i) => {
+        total += item.amt;
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.cat}</td>
+            <td class="text-end">${item.amt.toLocaleString()}</td>
+            <td><button class="btn btn-sm btn-outline-danger" onclick="removeExpense(${i})">×</button></td>
+          </tr>`;
+      });
+
+      document.getElementById("totalExp").textContent = `Total Expenses: ${total.toLocaleString()} PKR`;
+    }
+
+    function removeExpense(i) {
+      expenses.splice(i, 1);
+      updateTable();
+      saveData();
+      calculate();
+    }
+
+    function clearAll() {
+      if (confirm("Clear everything?")) {
+        expenses = [];
+        document.getElementById("income").value = "";
+        updateTable();
+        saveData();
+        calculate();
+      }
+    }
+
+    function calculate() {
+      const income = parseFloat(document.getElementById("income").value) || 0;
+      const totalExp = expenses.reduce((sum, e) => sum + e.amt, 0);
+      const savings = income - totalExp;
+      const pct = income > 0 ? Math.round((savings / income) * 100) : 0;
+
+      document.getElementById("savings").textContent = savings.toLocaleString() + " PKR";
+      document.getElementById("savings").className = savings >= 0 ? "fw-bold text-success" : "fw-bold text-danger";
+      document.getElementById("savPct").textContent = pct + "%";
+
+      // Chart
+      const ctx = document.getElementById("myChart").getContext("2d");
+      if (chartInstance) chartInstance.destroy();
+
+      const labels = ["Savings", ...expenses.map(e => e.cat)];
+      const dataValues = [Math.max(savings, 0), ...expenses.map(e => e.amt)];
+      const colors = ["#28a745", "#0d6efd", "#ffc107", "#dc3545", "#6f42c1", "#fd7e14", "#20c997", "#e83e8c"];
+
+      chartInstance = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: labels,
+          datasets: [{
+            data: dataValues,
+            backgroundColor: colors,
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom", labels: { padding: 20 } } }
+        }
+      });
+    }
+
     function loadPakCategories() {
       expenses = [
-        {cat:"Rent", amt:45000}, {cat:"Electricity & Gas", amt:12000},
-        {cat:"Groceries", amt:25000}, {cat:"Transport", amt:8000},
-        {cat:"School Fees", amt:15000}, {cat:"Internet/Mobile", amt:5000},
-        {cat:"Medical", amt:3000}, {cat:"Entertainment", amt:4000}
+        {cat: "Rent", amt: 45000},
+        {cat: "Electricity & Gas", amt: 12000},
+        {cat: "Groceries", amt: 25000},
+        {cat: "Transport (Petrol/Uber)", amt: 8000},
+        {cat: "School/College Fees", amt: 15000},
+        {cat: "Internet + Mobile", amt: 5000},
+        {cat: "Medical", amt: 3000},
+        {cat: "Eating Out / Entertainment", amt: 4000}
       ];
-      updateTable(); calculate();
+      updateTable();
+      saveData();
+      calculate();
     }
-    // Add localStorage save/load on load & after add/remove
+
+    function exportCSV() {
+      if (expenses.length === 0) {
+        alert("Nothing to export yet!");
+        return;
+      }
+      let csv = "Category,Amount (PKR)\n";
+      expenses.forEach(e => csv += `"${e.cat}",${e.amt}\n`);
+      const income = document.getElementById("income").value || 0;
+      csv += `Income,${income}\nTotal Expenses,${expenses.reduce((s,v)=>s+v.amt,0)}\nSavings,${income - expenses.reduce((s,v)=>s+v.amt,0)}\n`;
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "pakbudget.csv";
+      a.click();
+    }
+
+    // Load saved data when page opens
+    window.onload = function() {
+      loadData();
+      calculate();
+    };
   </script>
 </body>
 </html>
