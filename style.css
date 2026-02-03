@@ -10,6 +10,7 @@ header {
   background-color: #1a73e8;
   color: white;
   padding: 20px;
+  text-align: center;
 }
 
 header h1 {
@@ -29,7 +30,7 @@ header nav a:hover {
 }
 
 main {
-  max-width: 800px;
+  max-width: 900px;
   margin: 30px auto;
   padding: 20px;
   background-color: white;
@@ -94,6 +95,11 @@ h2, h3 {
 }
 
 /* Buttons */
+.buttons {
+  text-align: center;
+  margin: 15px 0;
+}
+
 button {
   padding: 10px 20px;
   margin: 10px 5px;
