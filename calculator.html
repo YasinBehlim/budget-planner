@@ -5,20 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Budget Calculator - PakBudget</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    body { font-family: 'Inter', sans-serif; background: #f8f9fa; }
-    .card { border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    input[type=number] { width: 130px; text-align: right; }
-    .table td { vertical-align: middle; }
+    :root { --primary: #22c55e; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #e5e5e5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main { flex: 1; }
+    .card {
+      background: #171717;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .form-control, .form-control:focus {
+      background: #1f1f1f;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 12px;
+    }
+    .btn-success {
+      background: var(--primary);
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .table { --bs-table-bg: #171717; --bs-table-color: #e5e5e5; }
+    .table thead th { background: #111; }
+    input[type=number] { text-align: right; font-weight: 600; }
+    .header {
+      background: linear-gradient(135deg, #111, #1a1a1a);
+      padding: 1.5rem 0;
+    }
+    .nav-link { color: #ccc; }
+    .nav-link.active { color: var(--primary); font-weight: 600; }
+    footer { background: #0a0a0a; }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg header">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">PakBudget</a>
+      <a class="navbar-brand fw-bold text-white" href="index.html">PakBudget</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -33,84 +68,81 @@
     </div>
   </nav>
 
-  <div class="container my-5">
-    <h1 class="text-center mb-4">Monthly Budget Calculator</h1>
+  <main class="container my-4">
+    <h1 class="text-center mb-4 fw-bold" style="color: #22c55e;">Monthly Budget Planner</h1>
 
     <!-- Income -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <label class="form-label fw-bold">Monthly Income (PKR)</label>
-        <input type="number" id="income" class="form-control form-control-lg" placeholder="150000" oninput="saveData(); calculate()">
-      </div>
+    <div class="card mb-4 p-4">
+      <label class="form-label fw-semibold">Monthly Income (PKR)</label>
+      <input type="number" id="income" class="form-control form-control-lg" placeholder="150000" oninput="saveData(); calculate()">
     </div>
 
     <!-- Add Expense -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5>Add Custom Expense</h5>
-        <div class="row g-3">
-          <div class="col-md-5">
-            <input type="text" id="cat" class="form-control" placeholder="Category e.g. Rent">
-          </div>
-          <div class="col-md-4">
-            <input type="number" id="amt" class="form-control" placeholder="Amount">
-          </div>
-          <div class="col-md-3">
-            <button class="btn btn-success w-100" onclick="addExpense()">+ Add</button>
-          </div>
+    <div class="card mb-4 p-4">
+      <h5 class="mb-3">Add Expense</h5>
+      <div class="row g-3">
+        <div class="col-md-5">
+          <input type="text" id="cat" class="form-control" placeholder="Category (e.g. Rent)">
         </div>
-        <button class="btn btn-outline-primary mt-3 w-100" onclick="loadCommonCategories()">
-          Common Categories
-        </button>
-        <small class="text-muted d-block mt-2">Loads suggested categories with ₹0 – just edit the amounts below</small>
+        <div class="col-md-4">
+          <input type="number" id="amt" class="form-control" placeholder="Amount">
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-success w-100" onclick="addExpense()">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
       </div>
+      <button class="btn btn-outline-light mt-3 w-100" onclick="loadCommonCategories()">
+        <i class="fas fa-list"></i> Common Categories
+      </button>
     </div>
 
     <!-- Expenses Table -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="d-flex justify-content-between mb-3">
-          <h5>Your Expenses</h5>
-          <button class="btn btn-sm btn-danger" onclick="clearAll()">Clear All</button>
-        </div>
-        <table class="table table-hover" id="expTable">
-          <thead><tr><th>Category</th><th class="text-end">Amount (PKR)</th><th></th></tr></thead>
-          <tbody></tbody>
-        </table>
-        <h5 class="text-end" id="totalExp">Total Expenses: 0 PKR</h5>
+    <div class="card mb-4 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Your Expenses</h5>
+        <button class="btn btn-sm btn-outline-danger" onclick="clearAll()">Clear All</button>
       </div>
+      <table class="table table-hover" id="expTable">
+        <thead><tr><th>Category</th><th class="text-end">Amount</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <h5 class="text-end fw-bold mt-3" id="totalExp">Total Expenses: 0 PKR</h5>
     </div>
 
-    <!-- Results -->
-    <div class="row">
-      <div class="col-md-5 mb-4">
-        <div class="card h-100">
-          <div class="card-body text-center">
-            <h4>Results</h4>
-            <p class="fs-4">Monthly Savings: <span id="savings" class="fw-bold text-success">0 PKR</span></p>
-            <p class="fs-4">Savings Rate: <span id="savPct" class="fw-bold">0%</span></p>
-            <button class="btn btn-outline-secondary mt-2 w-100" onclick="exportCSV()">Export to CSV</button>
+    <!-- Results + Chart -->
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card p-4 text-center">
+          <h4 class="mb-4">Your Results</h4>
+          <div class="mb-4">
+            <p class="mb-1 text-muted">Monthly Savings</p>
+            <h2 id="savings" class="fw-bold text-success">0 PKR</h2>
           </div>
+          <div>
+            <p class="mb-1 text-muted">Savings Rate</p>
+            <h2 id="savPct" class="fw-bold">0%</h2>
+          </div>
+          <button class="btn btn-outline-light w-100 mt-4" onclick="exportCSV()">
+            <i class="fas fa-download"></i> Export CSV
+          </button>
         </div>
       </div>
-
-      <div class="col-md-7">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5>Spending Breakdown</h5>
-            <canvas id="myChart" height="280"></canvas>
-          </div>
+      <div class="col-lg-7">
+        <div class="card p-4">
+          <h5 class="mb-3">Spending Breakdown</h5>
+          <canvas id="myChart" height="320"></canvas>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
-  <footer class="bg-dark text-white py-4 text-center">
-    <p>© 2026 PakBudget • Free Pakistan Budget Planner</p>
+  <footer class="py-4 text-center text-muted">
+    © 2026 PakBudget • Free for Pakistani families
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     let expenses = [];
     let chartInstance = null;
@@ -161,10 +193,9 @@
           <tr>
             <td>${item.cat}</td>
             <td class="text-end">
-              <input type="number" class="form-control" value="${item.amt}" 
-                     onchange="updateAmount(${i}, this.value)">
+              <input type="number" class="form-control d-inline-block w-32" value="${item.amt}" onchange="updateAmount(${i}, this.value)">
             </td>
-            <td><button class="btn btn-sm btn-outline-danger" onclick="removeExpense(${i})">×</button></td>
+            <td><button class="btn btn-sm text-danger" onclick="removeExpense(${i})"><i class="fas fa-trash"></i></button></td>
           </tr>`;
       });
 
@@ -198,31 +229,34 @@
       document.getElementById("savings").className = savings >= 0 ? "fw-bold text-success" : "fw-bold text-danger";
       document.getElementById("savPct").textContent = pct + "%";
 
-      // Chart
       const ctx = document.getElementById("myChart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
 
-      const labels = ["Savings", ...expenses.map(e => e.cat)];
-      const dataValues = [Math.max(savings, 0), ...expenses.map(e => e.amt)];
-      const colors = ["#28a745", "#0d6efd", "#ffc107", "#dc3545", "#6f42c1", "#fd7e14", "#20c997", "#e83e8c"];
-
       chartInstance = new Chart(ctx, {
         type: "doughnut",
-        data: { labels, datasets: [{ data: dataValues, backgroundColor: colors, borderWidth: 3 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+        data: {
+          labels: ["Savings", ...expenses.map(e => e.cat)],
+          datasets: [{
+            data: [Math.max(savings, 0), ...expenses.map(e => e.amt)],
+            backgroundColor: ["#22c55e", "#3b82f6", "#eab308", "#ef4444", "#8b5cf6", "#f97316", "#14b8a6"],
+            borderColor: "#171717",
+            borderWidth: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom", labels: { color: "#ddd", padding: 15 } } }
+        }
       });
     }
 
     function loadCommonCategories() {
       expenses = [
-        {cat: "Rent", amt: 0},
-        {cat: "Electricity & Gas", amt: 0},
-        {cat: "Groceries", amt: 0},
-        {cat: "Transport (Petrol/Uber)", amt: 0},
-        {cat: "School/College Fees", amt: 0},
-        {cat: "Internet + Mobile", amt: 0},
-        {cat: "Medical", amt: 0},
-        {cat: "Eating Out / Entertainment", amt: 0},
+        {cat: "Rent", amt: 0}, {cat: "Electricity & Gas", amt: 0},
+        {cat: "Groceries", amt: 0}, {cat: "Transport", amt: 0},
+        {cat: "School Fees", amt: 0}, {cat: "Internet + Mobile", amt: 0},
+        {cat: "Medical", amt: 0}, {cat: "Eating Out", amt: 0},
         {cat: "Savings / Investments", amt: 0}
       ];
       updateTable();
@@ -239,7 +273,7 @@
       const blob = new Blob([csv], {type: "text/csv"});
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "pakbudget.csv";
+      a.download = "my-budget.csv";
       a.click();
     }
 
