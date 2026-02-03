@@ -2,89 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Budget Planner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget Dashboard - Pak Budget Planner</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <header>
-    <h1>Pak Budget Planner</h1>
-    <nav>
-      <a href="index.html">Home</a> |
-      <a href="calculator.html">Calculator</a> |
-      <a href="blog.html">Blog</a> |
-      <a href="about.html">About</a> |
-      <a href="privacy.html">Privacy</a> |
-      <a href="contact.html">Contact</a>
-    </nav>
+  <header class="top-bar">
+    <h1>Budget Planner</h1>
+    <button id="themeToggle">🌙</button>
   </header>
 
-  <main>
-    <h2>Budget Dashboard</h2>
+  <main class="container">
 
-    <!-- Dashboard Cards -->
-    <div class="dashboard-cards">
+    <!-- DASHBOARD -->
+    <section class="cards">
       <div class="card">
-        <h3>Total Income</h3>
-        <p id="total-income">0 PKR</p>
+        <span>Total Income</span>
+        <strong id="income">0 PKR</strong>
       </div>
       <div class="card">
-        <h3>Total Expenses</h3>
-        <p id="total-expenses">0 PKR</p>
+        <span>Total Expenses</span>
+        <strong id="expenses">0 PKR</strong>
       </div>
       <div class="card">
-        <h3>Remaining Budget</h3>
-        <p id="remaining-budget">0 PKR</p>
+        <span>Remaining</span>
+        <strong id="remaining">0 PKR</strong>
       </div>
       <div class="card">
-        <h3>Total Savings</h3>
-        <p id="total-savings">0 PKR</p>
+        <span>Savings</span>
+        <strong id="savings">0 PKR</strong>
       </div>
-    </div>
+    </section>
 
-    <!-- Transaction Table -->
-    <h3>Budget Entries</h3>
-    <table id="transaction-table">
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Amount (PKR)</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Default rows -->
-        <tr>
-          <td><input type="text" class="category" value="Income" readonly></td>
-          <td><input type="number" class="amount" value="0"></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="category" value="Savings" readonly></td>
-          <td><input type="number" class="amount" value="0"></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- INPUT TABLE -->
+    <section class="table-section">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Amount (PKR)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr>
+            <td><input value="Income" readonly></td>
+            <td><input type="number" class="amount"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><input value="Savings" readonly></td>
+            <td><input type="number" class="amount"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><input value="EMI"></td>
+            <td><input type="number" class="amount"></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- Buttons -->
-    <div class="buttons">
-      <button id="add-transaction">Add Expense</button>
-      <button id="calculate-budget">Calculate Budget</button>
-    </div>
+      <div class="actions">
+        <button onclick="addRow()">➕ Add Expense</button>
+        <button onclick="calculate()">📊 Calculate</button>
+      </div>
+    </section>
 
-    <!-- Pie Chart -->
-    <h3>Expense Distribution</h3>
-    <canvas id="expenseChart"></canvas>
+    <!-- BREAKDOWN -->
+    <section>
+      <h2>Expense Breakdown</h2>
+      <div id="bars"></div>
+    </section>
+
   </main>
 
-  <footer>
-    <p>&copy; 2026 Pak Budget Planner</p>
-  </footer>
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
