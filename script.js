@@ -9,12 +9,12 @@ if (savedTheme === "dark") {
 
 toggle.onclick = () => {
   document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
-  toggle.textContent = isDark ? "☀️" : "🌙";
-  localStorage.setItem("theme", isDark ? "dark" : "light");
+  const dark = document.body.classList.contains("dark");
+  toggle.textContent = dark ? "☀️" : "🌙";
+  localStorage.setItem("theme", dark ? "dark" : "light");
 };
 
-// ADD EXPENSE ROW
+// ADD ROW
 function addRow() {
   const row = document.createElement("tr");
   row.innerHTML = `
@@ -25,7 +25,7 @@ function addRow() {
   document.getElementById("rows").appendChild(row);
 }
 
-// CALCULATE BUDGET
+// CALCULATE
 function calculate() {
   const rows = document.querySelectorAll("#rows tr");
   let income = 0;
@@ -47,7 +47,6 @@ function calculate() {
   const savings = income - expenses;
   const savingsPercent = income ? Math.round((savings / income) * 100) : 0;
 
-  // UPDATE DASHBOARD
   document.getElementById("income").textContent = income + " PKR";
   document.getElementById("expenses").textContent = expenses + " PKR";
   document.getElementById("savings").textContent = savings + " PKR";
@@ -56,7 +55,7 @@ function calculate() {
   renderBars(breakdown, income);
 }
 
-// RENDER PROGRESS BARS
+// PROGRESS BARS
 function renderBars(items, income) {
   const bars = document.getElementById("bars");
   bars.innerHTML = "";
