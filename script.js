@@ -1,89 +1,75 @@
-document.addEventListener("DOMContentLoaded", function() {
-  let transactions = [];
+// THEME
+const toggle = document.getElementById("themeToggle");
+const savedTheme = localStorage.getItem("theme");
 
-  // Add new expense row
-  document.getElementById("add-transaction").addEventListener("click", () => {
-    const tbody = document.querySelector("#transaction-table tbody");
-    const row = document.createElement("tr");
+if (savedTheme === "dark") {
+  document.body.classList.add("dark");
+  toggle.textContent = "☀️";
+}
 
-    row.innerHTML = `
-      <td><input type="text" class="category" placeholder="Expense Category" required></td>
-      <td><input type="number" class="amount" placeholder="Amount" required></td>
-      <td><button class="delete-row">Delete</button></td>
+toggle.onclick = () => {
+  document.body.classList.toggle("dark");
+  const dark = document.body.classList.contains("dark");
+  toggle.textContent = dark ? "☀️" : "🌙";
+  localStorage.setItem("theme", dark ? "dark" : "light");
+};
+
+// ADD ROW
+function addRow() {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input placeholder="Category"></td>
+    <td><input type="number" class="amount"></td>
+    <td><button onclick="this.closest('tr').remove()">❌</button></td>
+  `;
+  document.getElementById("rows").appendChild(row);
+}
+
+// CALCULATE
+function calculate() {
+  const rows = document.querySelectorAll("#rows tr");
+  let income = 0, expenses = 0, savings = 0;
+
+  const breakdown = [];
+
+  rows.forEach(r => {
+    const name = r.children[0].querySelector("input").value;
+    const val = Number(r.children[1].querySelector("input").value || 0);
+
+    if (name.toLowerCase() === "income") income += val;
+    else if (name.toLowerCase() === "savings") savings += val;
+    else {
+      expenses += val;
+      breakdown.push({ name, val });
+    }
+  });
+
+  document.getElementById("income").textContent = income + " PKR";
+  document.getElementById("expenses").textContent = expenses + " PKR";
+  document.getElementById("savings").textContent = savings + " PKR";
+  document.getElementById("remaining").textContent = (income - expenses - savings) + " PKR";
+
+  renderBars(breakdown, income);
+}
+
+// BARS
+function renderBars(items, income) {
+  const bars = document.getElementById("bars");
+  bars.innerHTML = "";
+
+  items.forEach(i => {
+    const percent = income ? Math.round((i.val / income) * 100) : 0;
+
+    bars.innerHTML += `
+      <div class="bar">
+        <div class="bar-label">
+          <span>${i.name}</span>
+          <span>${percent}%</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:${percent}%"></div>
+        </div>
+      </div>
     `;
-
-    tbody.appendChild(row);
-
-    row.querySelector(".delete-row").addEventListener("click", () => {
-      row.remove();
-    });
   });
-
-  // Calculate Budget
-  document.getElementById("calculate-budget").addEventListener("click", () => {
-    const categories = document.querySelectorAll(".category");
-    const amounts = document.querySelectorAll(".amount");
-
-    transactions = [];
-    let totalIncome = 0;
-    let totalExpenses = 0;
-    let totalSavings = 0;
-
-    categories.forEach((cat, index) => {
-      const name = cat.value.trim();
-      const amount = Number(amounts[index].value) || 0;
-
-      if(name.toLowerCase() === "income") {
-        totalIncome += amount;
-      } else if(name.toLowerCase() === "savings") {
-        totalSavings += amount;
-        totalExpenses += amount;
-      } else {
-        totalExpenses += amount;
-      }
-
-      transactions.push({ name, amount });
-    });
-
-    const remaining = totalIncome - totalExpenses;
-
-    // Update dashboard
-    document.getElementById("total-income").textContent = totalIncome + " PKR";
-    document.getElementById("total-expenses").textContent = totalExpenses + " PKR";
-    document.getElementById("remaining-budget").textContent = remaining + " PKR";
-    document.getElementById("total-savings").textContent = totalSavings + " PKR";
-
-    // Pie Chart
-    const ctx = document.getElementById("expenseChart").getContext("2d");
-    if(window.expenseChartInstance) window.expenseChartInstance.destroy();
-
-    const labels = transactions.map(t => t.name);
-    const data = transactions.map(t => t.amount);
-
-    window.expenseChartInstance = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels,
-        datasets: [{
-          data,
-          backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#C9CBCF','#8AC926']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' },
-          datalabels: {
-            color: 'white',
-            formatter: (value, context) => {
-              const label = context.chart.data.labels[context.dataIndex];
-              return `${label}: ${value}`;
-            },
-            font: { weight: 'bold', size: 12 }
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
-  });
-});
+}
