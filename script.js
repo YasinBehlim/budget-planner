@@ -1,4 +1,4 @@
-// THEME
+// THEME TOGGLE
 const toggle = document.getElementById("themeToggle");
 const savedTheme = localStorage.getItem("theme");
 
@@ -9,61 +9,65 @@ if (savedTheme === "dark") {
 
 toggle.onclick = () => {
   document.body.classList.toggle("dark");
-  const dark = document.body.classList.contains("dark");
-  toggle.textContent = dark ? "☀️" : "🌙";
-  localStorage.setItem("theme", dark ? "dark" : "light");
+  const isDark = document.body.classList.contains("dark");
+  toggle.textContent = isDark ? "☀️" : "🌙";
+  localStorage.setItem("theme", isDark ? "dark" : "light");
 };
 
-// ADD ROW
+// ADD EXPENSE ROW
 function addRow() {
   const row = document.createElement("tr");
   row.innerHTML = `
-    <td><input placeholder="Category"></td>
+    <td><input placeholder="Expense Category"></td>
     <td><input type="number" class="amount"></td>
     <td><button onclick="this.closest('tr').remove()">❌</button></td>
   `;
   document.getElementById("rows").appendChild(row);
 }
 
-// CALCULATE
+// CALCULATE BUDGET
 function calculate() {
   const rows = document.querySelectorAll("#rows tr");
-  let income = 0, expenses = 0, savings = 0;
+  let income = 0;
+  let expenses = 0;
+  let breakdown = [];
 
-  const breakdown = [];
+  rows.forEach(row => {
+    const name = row.children[0].querySelector("input").value.trim();
+    const value = Number(row.children[1].querySelector("input").value || 0);
 
-  rows.forEach(r => {
-    const name = r.children[0].querySelector("input").value;
-    const val = Number(r.children[1].querySelector("input").value || 0);
-
-    if (name.toLowerCase() === "income") income += val;
-    else if (name.toLowerCase() === "savings") savings += val;
-    else {
-      expenses += val;
-      breakdown.push({ name, val });
+    if (name.toLowerCase() === "income") {
+      income += value;
+    } else {
+      expenses += value;
+      breakdown.push({ name, value });
     }
   });
 
+  const savings = income - expenses;
+  const savingsPercent = income ? Math.round((savings / income) * 100) : 0;
+
+  // UPDATE DASHBOARD
   document.getElementById("income").textContent = income + " PKR";
   document.getElementById("expenses").textContent = expenses + " PKR";
   document.getElementById("savings").textContent = savings + " PKR";
-  document.getElementById("remaining").textContent = (income - expenses - savings) + " PKR";
+  document.getElementById("savingsPercent").textContent = savingsPercent + "%";
 
   renderBars(breakdown, income);
 }
 
-// BARS
+// RENDER PROGRESS BARS
 function renderBars(items, income) {
   const bars = document.getElementById("bars");
   bars.innerHTML = "";
 
-  items.forEach(i => {
-    const percent = income ? Math.round((i.val / income) * 100) : 0;
+  items.forEach(item => {
+    const percent = income ? Math.round((item.value / income) * 100) : 0;
 
     bars.innerHTML += `
       <div class="bar">
         <div class="bar-label">
-          <span>${i.name}</span>
+          <span>${item.name}</span>
           <span>${percent}%</span>
         </div>
         <div class="bar-bg">
